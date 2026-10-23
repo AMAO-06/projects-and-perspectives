@@ -1,24 +1,60 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import hero from "@/assets/hero.jpg";
+import { profile, projects, research } from "@/lib/content";
+import { ProjectCard, ResearchItem } from "@/components/Cards";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
 export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: `${profile.name} — Mechatronics Engineer` },
+      { name: "description", content: profile.tagline },
+      { property: "og:title", content: `${profile.name} — Mechatronics Engineer` },
+      { property: "og:description", content: profile.tagline },
+    ],
+  }),
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
 function Index() {
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
+    <>
+      <section className="relative overflow-hidden">
+        <img src={hero} alt="Robotic machine working on a circuit board" width={1600} height={1008} className="absolute inset-0 h-full w-full object-cover opacity-50" />
+        <div className="absolute inset-0 bg-hero-fade" />
+        <div className="relative mx-auto max-w-6xl px-6 pb-24 pt-32 md:pt-44">
+          <p className="mb-4 text-sm uppercase tracking-[0.3em] text-primary">{profile.title} · {profile.location}</p>
+          <h1 className="max-w-3xl text-5xl font-bold leading-tight md:text-7xl">
+            Hi, I'm <span className="text-gradient">{profile.name}</span>
+          </h1>
+          <p className="mt-6 max-w-xl text-lg text-muted-foreground">{profile.tagline}</p>
+          <div className="mt-8 flex gap-4">
+            <Link to="/projects" className="rounded-lg bg-primary px-6 py-3 font-medium text-primary-foreground shadow-glow transition-transform hover:scale-105">View projects</Link>
+            <Link to="/contact" className="rounded-lg border px-6 py-3 font-medium transition-colors hover:border-primary hover:text-primary">Get in touch</Link>
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-6 py-20">
+        <div className="mb-10 flex items-end justify-between">
+          <h2 className="text-3xl font-bold md:text-4xl">Featured projects</h2>
+          <Link to="/projects" className="text-sm text-primary hover:underline">All projects →</Link>
+        </div>
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {projects.slice(0, 3).map((p) => <ProjectCard key={p.title} p={p} />)}
+        </div>
+      </section>
+
+      <section className="grid-lines border-y">
+        <div className="mx-auto max-w-6xl px-6 py-20">
+          <div className="mb-10 flex items-end justify-between">
+            <h2 className="text-3xl font-bold md:text-4xl">Latest research</h2>
+            <Link to="/research" className="text-sm text-primary hover:underline">All research →</Link>
+          </div>
+          <div className="space-y-10">
+            {research.slice(0, 2).map((r) => <ResearchItem key={r.title} r={r} />)}
+          </div>
+        </div>
+      </section>
+    </>
   );
 }
