@@ -18,6 +18,16 @@ export const projects: Project[] = [
   { title: "Prosthetic Hand Prototype", summary: "3D-printed hand driven by EMG signals for grip control.", tags: ["EMG", "3D Printing", "Biomech"], year: "2023" },
 ];
 
+export type Certification = { title: string; issuer: string; year: string; id?: string };
+
+export const certifications: Certification[] = [
+  { title: "Certified SOLIDWORKS Associate (CSWA)", issuer: "Dassault Systèmes", year: "2025" },
+  { title: "ROS 2 Developer Certificate", issuer: "The Construct", year: "2025" },
+  { title: "Fundamentals of Digital Manufacturing, Design and Sustainability", issuer: "Autodesk · Coursera", year: "2024" },
+  { title: "PLC Programming — From Novice to Professional", issuer: "Udemy", year: "2024" },
+  { title: "Python for Everybody Specialization", issuer: "University of Michigan · Coursera", year: "2023" },
+];
+
 export type Research = { title: string; venue: string; year: string; abstract: string };
 
 export const research: Research[] = [
