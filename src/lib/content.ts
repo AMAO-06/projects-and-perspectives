@@ -2,7 +2,7 @@ export const profile = {
   name: "Alaran Mashkur",
   title: "Mechatronics Engineer",
   location: "Lagos, Nigeria",
-  email: "hello@alaranmashkur.com",
+  email: "mashkur.m2300593@st.futminna.edu.ng",
   tagline: "I design machines that sense, think and move — blending mechanics, electronics and code.",
   skills: ["Robotics", "Embedded C/C++", "ROS 2", "Control Systems", "SolidWorks", "PCB Design", "Python", "Computer Vision"],
 };
