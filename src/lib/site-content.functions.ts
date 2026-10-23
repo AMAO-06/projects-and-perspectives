@@ -1,5 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
-import type { Database } from "@/integrations/supabase/types";
+import type { Database, Json } from "@/integrations/supabase/types";
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import {
@@ -74,7 +74,7 @@ export const saveSiteSection = createServerFn({ method: "POST" })
 
     const { error } = await context.supabase
       .from("site_content")
-      .upsert({ section: data.section, data: data.data, updated_at: new Date().toISOString() });
+      .upsert({ section: data.section, data: data.data as Json, updated_at: new Date().toISOString() });
     if (error) throw new Error(error.message);
     return { ok: true as const };
   });

@@ -11,7 +11,7 @@ export const Route = createFileRoute("/auth")({
     meta: [{ title: "Sign in — Alaran Mashkur" }],
   }),
   validateSearch: (search: Record<string, unknown>) => ({
-    redirect: typeof search.redirect === "string" ? search.redirect : undefined,
+    redirect: typeof search["redirect"] === "string" ? search["redirect"] : undefined,
   }),
   component: AuthPage,
 });
