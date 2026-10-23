@@ -19,6 +19,16 @@ export const Route = createFileRoute("/_authenticated/admin")({
   component: AdminPage,
 });
 
+async function uploadPhoto(file: File): Promise<string | null> {
+  const path = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9._-]/g, "_")}`;
+  const { error } = await supabase.storage.from("media").upload(path, file);
+  if (error) {
+    toast.error(error.message);
+    return null;
+  }
+  return path;
+}
+
 function AdminPage() {
   const { data } = useSuspenseQuery(siteContentQueryOptions);
   const [draft, setDraft] = useState<SiteContent>(() => data);
@@ -76,21 +86,11 @@ function AdminPage() {
     }
   }
 
-  async function uploadPhoto(file: File): Promise<string | null> {
-    const path = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9._-]/g, "_")}`;
-    const { error } = await supabase.storage.from("media").upload(path, file);
-    if (error) {
-      toast.error(error.message);
-      return null;
-    }
-    return path;
-  }
-
   async function signOut() {
     await queryClient.cancelQueries();
     queryClient.clear();
     await supabase.auth.signOut();
-    navigate({ to: "/auth", search: {}, replace: true });
+    navigate({ to: "/auth", search: { redirect: undefined }, replace: true });
   }
 
   if (admin === false) {
@@ -298,7 +298,7 @@ function PhotoPicker({
   onPicked,
 }: {
   label: string;
-  path?: string;
+  path?: string | undefined;
   onPicked: (path: string) => void;
 }) {
   return (
