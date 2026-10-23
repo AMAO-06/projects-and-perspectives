@@ -1,4 +1,16 @@
-import type { Project, Research } from "@/lib/content";
+import type { Project, Research, Certification } from "@/lib/content";
+
+export function CertItem({ c }: { c: Certification }) {
+  return (
+    <article className="rounded-xl border bg-card p-6 transition-all hover:border-primary hover:shadow-glow">
+      <div className="flex items-start justify-between gap-4">
+        <h3 className="text-lg font-semibold">{c.title}</h3>
+        <div className="text-xs uppercase tracking-wider text-primary">{c.year}</div>
+      </div>
+      <p className="mt-2 text-sm text-muted-foreground">{c.issuer}</p>
+    </article>
+  );
+}
 
 export function ProjectCard({ p }: { p: Project }) {
   return (

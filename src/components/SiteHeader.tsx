@@ -4,6 +4,7 @@ import { profile } from "@/lib/content";
 const links = [
   { to: "/projects", label: "Projects" },
   { to: "/research", label: "Research" },
+  { to: "/certifications", label: "Certifications" },
   { to: "/about", label: "About" },
   { to: "/contact", label: "Contact" },
 ] as const;
