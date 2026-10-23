@@ -1,4 +1,5 @@
 import type { Project, Research, Certification } from "@/lib/content";
+import { mediaUrl } from "@/lib/site-content";
 
 export function CertItem({ c }: { c: Certification }) {
   return (
@@ -15,6 +16,13 @@ export function CertItem({ c }: { c: Certification }) {
 export function ProjectCard({ p }: { p: Project }) {
   return (
     <article className="group rounded-xl border bg-card p-6 transition-all hover:-translate-y-1 hover:border-primary hover:shadow-glow">
+      {p.image && (
+        <img
+          src={mediaUrl(p.image)}
+          alt={p.title}
+          className="mb-4 h-44 w-full rounded-lg border object-cover"
+        />
+      )}
       <div className="mb-3 text-xs text-muted-foreground">{p.year}</div>
       <h3 className="text-xl font-semibold group-hover:text-primary">{p.title}</h3>
       <p className="mt-2 text-sm text-muted-foreground">{p.summary}</p>

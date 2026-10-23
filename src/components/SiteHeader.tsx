@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
-import { profile } from "@/lib/content";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { siteContentQueryOptions } from "@/lib/site-content";
 
 const links = [
   { to: "/projects", label: "Projects" },
@@ -10,6 +11,7 @@ const links = [
 ] as const;
 
 export function SiteHeader() {
+  const { profile } = useSuspenseQuery(siteContentQueryOptions).data;
   return (
     <header className="sticky top-0 z-50 border-b bg-background/80 backdrop-blur">
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
@@ -29,6 +31,7 @@ export function SiteHeader() {
 }
 
 export function SiteFooter() {
+  const { profile } = useSuspenseQuery(siteContentQueryOptions).data;
   return (
     <footer className="border-t py-8 text-center text-sm text-muted-foreground">
       © {new Date().getFullYear()} {profile.name} · {profile.title}

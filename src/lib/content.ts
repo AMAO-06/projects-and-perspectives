@@ -1,4 +1,15 @@
-export const profile = {
+export type Profile = {
+  name: string;
+  title: string;
+  location: string;
+  email: string;
+  tagline: string;
+  skills: string[];
+  photo?: string;
+  heroImage?: string;
+};
+
+export const profile: Profile = {
   name: "Alaran Mashkur",
   title: "Mechatronics Engineer",
   location: "Lagos, Nigeria",
@@ -7,7 +18,7 @@ export const profile = {
   skills: ["Robotics", "Embedded C/C++", "ROS 2", "Control Systems", "SolidWorks", "PCB Design", "Python", "Computer Vision"],
 };
 
-export type Project = { title: string; summary: string; tags: string[]; year: string };
+export type Project = { title: string; summary: string; tags: string[]; year: string; image?: string };
 
 export const projects: Project[] = [
   { title: "6-DOF Robotic Arm", summary: "Low-cost manipulator with inverse kinematics and a custom servo controller board.", tags: ["ROS 2", "Kinematics", "PCB"], year: "2026" },
