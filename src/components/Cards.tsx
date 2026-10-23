@@ -1,0 +1,26 @@
+import type { Project, Research } from "@/lib/content";
+
+export function ProjectCard({ p }: { p: Project }) {
+  return (
+    <article className="group rounded-xl border bg-card p-6 transition-all hover:-translate-y-1 hover:border-primary hover:shadow-glow">
+      <div className="mb-3 text-xs text-muted-foreground">{p.year}</div>
+      <h3 className="text-xl font-semibold group-hover:text-primary">{p.title}</h3>
+      <p className="mt-2 text-sm text-muted-foreground">{p.summary}</p>
+      <div className="mt-4 flex flex-wrap gap-2">
+        {p.tags.map((t) => (
+          <span key={t} className="rounded-full bg-secondary px-3 py-1 text-xs text-secondary-foreground">{t}</span>
+        ))}
+      </div>
+    </article>
+  );
+}
+
+export function ResearchItem({ r }: { r: Research }) {
+  return (
+    <article className="border-l-2 border-primary pl-6">
+      <div className="text-xs uppercase tracking-wider text-primary">{r.venue} · {r.year}</div>
+      <h3 className="mt-1 text-xl font-semibold">{r.title}</h3>
+      <p className="mt-2 text-muted-foreground">{r.abstract}</p>
+    </article>
+  );
+}
