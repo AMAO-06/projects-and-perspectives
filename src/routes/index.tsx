@@ -1,25 +1,31 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import hero from "@/assets/hero.jpg";
-import { profile, projects, research } from "@/lib/content";
+import { mediaUrl, siteContentQueryOptions } from "@/lib/site-content";
+import { profile as fallbackProfile } from "@/lib/content";
 import { ProjectCard, ResearchItem } from "@/components/Cards";
 
 export const Route = createFileRoute("/")({
+  loader: ({ context }) => context.queryClient.ensureQueryData(siteContentQueryOptions),
   head: () => ({
     meta: [
-      { title: `${profile.name} — Mechatronics Engineer` },
-      { name: "description", content: profile.tagline },
-      { property: "og:title", content: `${profile.name} — Mechatronics Engineer` },
-      { property: "og:description", content: profile.tagline },
+      { title: `${fallbackProfile.name} — Mechatronics Engineer` },
+      { name: "description", content: fallbackProfile.tagline },
+      { property: "og:title", content: `${fallbackProfile.name} — Mechatronics Engineer` },
+      { property: "og:description", content: fallbackProfile.tagline },
     ],
   }),
   component: Index,
 });
 
 function Index() {
+  const { profile, projects, research } = useSuspenseQuery(siteContentQueryOptions).data;
+  const heroSrc = profile.heroImage ? mediaUrl(profile.heroImage) : hero;
+
   return (
     <>
       <section className="relative overflow-hidden">
-        <img src={hero} alt="Robotic machine working on a circuit board" width={1600} height={1008} className="absolute inset-0 h-full w-full object-cover opacity-50" />
+        <img src={heroSrc} alt="Featured work" width={1600} height={1008} className="absolute inset-0 h-full w-full object-cover opacity-50" />
         <div className="absolute inset-0 bg-hero-fade" />
         <div className="relative mx-auto max-w-6xl px-6 pb-24 pt-32 md:pt-44">
           <p className="mb-4 text-sm uppercase tracking-[0.3em] text-primary">{profile.title} · {profile.location}</p>
@@ -40,7 +46,7 @@ function Index() {
           <Link to="/projects" className="text-sm text-primary hover:underline">All projects →</Link>
         </div>
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {projects.slice(0, 3).map((p) => <ProjectCard key={p.title} p={p} />)}
+          {projects.slice(0, 3).map((p) => <ProjectCard key={`${p.title}-${p.year}`} p={p} />)}
         </div>
       </section>
 
@@ -51,7 +57,7 @@ function Index() {
             <Link to="/research" className="text-sm text-primary hover:underline">All research →</Link>
           </div>
           <div className="space-y-10">
-            {research.slice(0, 2).map((r) => <ResearchItem key={r.title} r={r} />)}
+            {research.slice(0, 2).map((r) => <ResearchItem key={`${r.title}-${r.year}`} r={r} />)}
           </div>
         </div>
       </section>

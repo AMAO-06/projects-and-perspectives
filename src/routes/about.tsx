@@ -1,20 +1,35 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { profile } from "@/lib/content";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { mediaUrl, siteContentQueryOptions } from "@/lib/site-content";
+import { profile as fallbackProfile } from "@/lib/content";
 
 export const Route = createFileRoute("/about")({
+  loader: ({ context }) => context.queryClient.ensureQueryData(siteContentQueryOptions),
   head: () => ({
     meta: [
-      { title: `About — ${profile.name}` },
-      { name: "description", content: `About ${profile.name}, mechatronics engineer in ${profile.location}.` },
-      { property: "og:title", content: `About — ${profile.name}` },
-      { property: "og:description", content: `About ${profile.name}, mechatronics engineer.` },
+      { title: `About — ${fallbackProfile.name}` },
+      { name: "description", content: `About ${fallbackProfile.name}, mechatronics engineer in ${fallbackProfile.location}.` },
+      { property: "og:title", content: `About — ${fallbackProfile.name}` },
+      { property: "og:description", content: `About ${fallbackProfile.name}, mechatronics engineer.` },
     ],
   }),
-  component: () => (
+  component: AboutPage,
+});
+
+function AboutPage() {
+  const { profile } = useSuspenseQuery(siteContentQueryOptions).data;
+  return (
     <section className="mx-auto max-w-4xl px-6 py-20">
       <h1 className="text-5xl font-bold">About me</h1>
-      <p className="mt-6 text-lg text-muted-foreground">
-        I'm a mechatronics engineer based in {profile.location}. I love building systems where mechanical design,
+      {profile.photo && (
+        <img
+          src={mediaUrl(profile.photo)}
+          alt={profile.name}
+          className="mt-8 h-44 w-44 rounded-full border object-cover"
+        />
+      )}
+      <p className="mt-8 text-lg text-muted-foreground">
+        I'm a {profile.title.toLowerCase()} based in {profile.location}. I love building systems where mechanical design,
         electronics and software meet — from robotic arms to smart sensors. I'm driven by solving real problems
         with practical, affordable engineering.
       </p>
@@ -25,5 +40,5 @@ export const Route = createFileRoute("/about")({
         ))}
       </div>
     </section>
-  ),
-});
+  );
+}

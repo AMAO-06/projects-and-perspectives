@@ -9,6 +9,8 @@ import {
   type ErrorComponentProps,
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
+import { Toaster } from "@/components/ui/sonner";
+import { siteContentQueryOptions } from "@/lib/site-content";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
@@ -75,6 +77,7 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
 }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
+  loader: ({ context }) => context.queryClient.ensureQueryData(siteContentQueryOptions),
   head: () => ({
     meta: [
       { charSet: "utf-8" },
@@ -122,6 +125,7 @@ function RootComponent() {
         <Outlet />
       </main>
       <SiteFooter />
+      <Toaster position="top-center" />
     </QueryClientProvider>
   );
 }
