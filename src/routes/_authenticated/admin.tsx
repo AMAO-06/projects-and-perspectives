@@ -167,9 +167,13 @@ function AdminPage() {
                 }
               />
               <PhotoPicker
-                label="Project photo"
+                 label="Project photo (card cover)"
                 path={p.image}
                 onPicked={(path) => updateList("projects", i, { image: path })}
+              />
+              <GalleryPicker
+                paths={p.gallery ?? []}
+                onChange={(gallery) => updateList("projects", i, { gallery })}
               />
               <Button variant="outline" size="sm" onClick={() => setProjects(draft.projects.filter((_, j) => j !== i))}>
                 Remove project

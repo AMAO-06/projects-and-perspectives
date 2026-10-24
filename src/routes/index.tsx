@@ -46,7 +46,7 @@ function Index() {
           <Link to="/projects" className="text-sm text-primary hover:underline">All projects →</Link>
         </div>
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {projects.slice(0, 3).map((p) => <ProjectCard key={`${p.title}-${p.year}`} p={p} />)}
+          {projects.slice(0, 3).map((p, i) => <ProjectCard key={`${p.title}-${p.year}`} p={p} index={i} />)}
         </div>
       </section>
 
