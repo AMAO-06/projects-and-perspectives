@@ -5,7 +5,7 @@ import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { mediaUrl, siteContentQueryOptions } from "@/lib/site-content";
 import { profile as fallbackProfile } from "@/lib/content";
 
-export const Route = createFileRoute("/projects/$projectId")({
+export const Route = createFileRoute("/projects_/$projectId")({
   loader: async ({ context, params }) => {
     const content = await context.queryClient.ensureQueryData(siteContentQueryOptions);
     const index = Number(params.projectId);
