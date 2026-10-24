@@ -19,7 +19,7 @@ import { Route as ProjectsRouteImport } from './routes/projects'
 import { Route as ResearchRouteImport } from './routes/research'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
-import { Route as ProjectsProjectIdRouteImport } from './routes/projects.$projectId'
+import { Route as ProjectsProjectIdRouteImport } from './routes/projects_.$projectId'
 import { Route as ApiPublicMediaRouteImport } from './routes/api.public.media'
 
 const IndexRoute = IndexRouteImport.update({
@@ -72,9 +72,9 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const ProjectsProjectIdRoute = ProjectsProjectIdRouteImport.update({
-  id: '/$projectId',
-  path: '/$projectId',
-  getParentRoute: () => ProjectsRoute,
+  id: '/projects_/$projectId',
+  path: '/projects/$projectId',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPublicMediaRoute = ApiPublicMediaRouteImport.update({
   id: '/api/public/media',
@@ -88,7 +88,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/certifications': typeof CertificationsRoute
   '/contact': typeof ContactRoute
-  '/projects': typeof ProjectsRouteWithChildren
+  '/projects': typeof ProjectsRoute
   '/research': typeof ResearchRoute
   '/reset-password': typeof ResetPasswordRoute
   '/admin': typeof AuthenticatedAdminRoute
@@ -101,7 +101,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/certifications': typeof CertificationsRoute
   '/contact': typeof ContactRoute
-  '/projects': typeof ProjectsRouteWithChildren
+  '/projects': typeof ProjectsRoute
   '/research': typeof ResearchRoute
   '/reset-password': typeof ResetPasswordRoute
   '/admin': typeof AuthenticatedAdminRoute
@@ -116,11 +116,11 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/certifications': typeof CertificationsRoute
   '/contact': typeof ContactRoute
-  '/projects': typeof ProjectsRouteWithChildren
+  '/projects': typeof ProjectsRoute
   '/research': typeof ResearchRoute
   '/reset-password': typeof ResetPasswordRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
-  '/projects/$projectId': typeof ProjectsProjectIdRoute
+  '/projects_/$projectId': typeof ProjectsProjectIdRoute
   '/api/public/media': typeof ApiPublicMediaRoute
 }
 export interface FileRouteTypes {
@@ -162,7 +162,7 @@ export interface FileRouteTypes {
     | '/research'
     | '/reset-password'
     | '/_authenticated/admin'
-    | '/projects/$projectId'
+    | '/projects_/$projectId'
     | '/api/public/media'
   fileRoutesById: FileRoutesById
 }
@@ -173,9 +173,10 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   CertificationsRoute: typeof CertificationsRoute
   ContactRoute: typeof ContactRoute
-  ProjectsRoute: typeof ProjectsRouteWithChildren
+  ProjectsRoute: typeof ProjectsRoute
   ResearchRoute: typeof ResearchRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  ProjectsProjectIdRoute: typeof ProjectsProjectIdRoute
   ApiPublicMediaRoute: typeof ApiPublicMediaRoute
 }
 
@@ -251,12 +252,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/projects/$projectId': {
-      id: '/projects/$projectId'
-      path: '/$projectId'
+    '/projects_/$projectId': {
+      id: '/projects_/$projectId'
+      path: '/projects/$projectId'
       fullPath: '/projects/$projectId'
       preLoaderRoute: typeof ProjectsProjectIdRouteImport
-      parentRoute: typeof ProjectsRoute
+      parentRoute: typeof rootRouteImport
     }
     '/api/public/media': {
       id: '/api/public/media'
@@ -279,18 +280,6 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
 const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
-interface ProjectsRouteChildren {
-  ProjectsProjectIdRoute: typeof ProjectsProjectIdRoute
-}
-
-const ProjectsRouteChildren: ProjectsRouteChildren = {
-  ProjectsProjectIdRoute: ProjectsProjectIdRoute,
-}
-
-const ProjectsRouteWithChildren = ProjectsRoute._addFileChildren(
-  ProjectsRouteChildren,
-)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
@@ -298,9 +287,10 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   CertificationsRoute: CertificationsRoute,
   ContactRoute: ContactRoute,
-  ProjectsRoute: ProjectsRouteWithChildren,
+  ProjectsRoute: ProjectsRoute,
   ResearchRoute: ResearchRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  ProjectsProjectIdRoute: ProjectsProjectIdRoute,
   ApiPublicMediaRoute: ApiPublicMediaRoute,
 }
 export const routeTree = rootRouteImport
