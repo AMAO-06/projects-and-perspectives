@@ -18,7 +18,7 @@ export const profile: Profile = {
   skills: ["Robotics", "Embedded C/C++", "ROS 2", "Control Systems", "SolidWorks", "PCB Design", "Python", "Computer Vision"],
 };
 
-export type Project = { title: string; summary: string; tags: string[]; year: string; image?: string };
+export type Project = { title: string; summary: string; tags: string[]; year: string; image?: string; gallery?: string[] };
 
 export const projects: Project[] = [
   { title: "6-DOF Robotic Arm", summary: "Low-cost manipulator with inverse kinematics and a custom servo controller board.", tags: ["ROS 2", "Kinematics", "PCB"], year: "2026" },
