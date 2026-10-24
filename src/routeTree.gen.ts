@@ -19,6 +19,7 @@ import { Route as ProjectsRouteImport } from './routes/projects'
 import { Route as ResearchRouteImport } from './routes/research'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as ProjectsProjectIdRouteImport } from './routes/projects.$projectId'
 import { Route as ApiPublicMediaRouteImport } from './routes/api.public.media'
 
 const IndexRoute = IndexRouteImport.update({
@@ -70,6 +71,11 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const ProjectsProjectIdRoute = ProjectsProjectIdRouteImport.update({
+  id: '/$projectId',
+  path: '/$projectId',
+  getParentRoute: () => ProjectsRoute,
+} as any)
 const ApiPublicMediaRoute = ApiPublicMediaRouteImport.update({
   id: '/api/public/media',
   path: '/api/public/media',
@@ -82,10 +88,11 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/certifications': typeof CertificationsRoute
   '/contact': typeof ContactRoute
-  '/projects': typeof ProjectsRoute
+  '/projects': typeof ProjectsRouteWithChildren
   '/research': typeof ResearchRoute
   '/reset-password': typeof ResetPasswordRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/projects/$projectId': typeof ProjectsProjectIdRoute
   '/api/public/media': typeof ApiPublicMediaRoute
 }
 export interface FileRoutesByTo {
@@ -94,10 +101,11 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/certifications': typeof CertificationsRoute
   '/contact': typeof ContactRoute
-  '/projects': typeof ProjectsRoute
+  '/projects': typeof ProjectsRouteWithChildren
   '/research': typeof ResearchRoute
   '/reset-password': typeof ResetPasswordRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/projects/$projectId': typeof ProjectsProjectIdRoute
   '/api/public/media': typeof ApiPublicMediaRoute
 }
 export interface FileRoutesById {
@@ -108,10 +116,11 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/certifications': typeof CertificationsRoute
   '/contact': typeof ContactRoute
-  '/projects': typeof ProjectsRoute
+  '/projects': typeof ProjectsRouteWithChildren
   '/research': typeof ResearchRoute
   '/reset-password': typeof ResetPasswordRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
+  '/projects/$projectId': typeof ProjectsProjectIdRoute
   '/api/public/media': typeof ApiPublicMediaRoute
 }
 export interface FileRouteTypes {
@@ -126,6 +135,7 @@ export interface FileRouteTypes {
     | '/research'
     | '/reset-password'
     | '/admin'
+    | '/projects/$projectId'
     | '/api/public/media'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -138,6 +148,7 @@ export interface FileRouteTypes {
     | '/research'
     | '/reset-password'
     | '/admin'
+    | '/projects/$projectId'
     | '/api/public/media'
   id:
     | '__root__'
@@ -151,6 +162,7 @@ export interface FileRouteTypes {
     | '/research'
     | '/reset-password'
     | '/_authenticated/admin'
+    | '/projects/$projectId'
     | '/api/public/media'
   fileRoutesById: FileRoutesById
 }
@@ -161,7 +173,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   CertificationsRoute: typeof CertificationsRoute
   ContactRoute: typeof ContactRoute
-  ProjectsRoute: typeof ProjectsRoute
+  ProjectsRoute: typeof ProjectsRouteWithChildren
   ResearchRoute: typeof ResearchRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   ApiPublicMediaRoute: typeof ApiPublicMediaRoute
@@ -239,6 +251,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/projects/$projectId': {
+      id: '/projects/$projectId'
+      path: '/$projectId'
+      fullPath: '/projects/$projectId'
+      preLoaderRoute: typeof ProjectsProjectIdRouteImport
+      parentRoute: typeof ProjectsRoute
+    }
     '/api/public/media': {
       id: '/api/public/media'
       path: '/api/public/media'
@@ -260,6 +279,18 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
 const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
+interface ProjectsRouteChildren {
+  ProjectsProjectIdRoute: typeof ProjectsProjectIdRoute
+}
+
+const ProjectsRouteChildren: ProjectsRouteChildren = {
+  ProjectsProjectIdRoute: ProjectsProjectIdRoute,
+}
+
+const ProjectsRouteWithChildren = ProjectsRoute._addFileChildren(
+  ProjectsRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
@@ -267,7 +298,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   CertificationsRoute: CertificationsRoute,
   ContactRoute: ContactRoute,
-  ProjectsRoute: ProjectsRoute,
+  ProjectsRoute: ProjectsRouteWithChildren,
   ResearchRoute: ResearchRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   ApiPublicMediaRoute: ApiPublicMediaRoute,
