@@ -167,9 +167,13 @@ function AdminPage() {
                 }
               />
               <PhotoPicker
-                label="Project photo"
+                 label="Project photo (card cover)"
                 path={p.image}
                 onPicked={(path) => updateList("projects", i, { image: path })}
+              />
+              <GalleryPicker
+                paths={p.gallery ?? []}
+                onChange={(gallery) => updateList("projects", i, { gallery })}
               />
               <Button variant="outline" size="sm" onClick={() => setProjects(draft.projects.filter((_, j) => j !== i))}>
                 Remove project
@@ -319,6 +323,64 @@ function PhotoPicker({
         />
       </div>
       <p className="text-xs text-muted-foreground">Uploading saves it to your media library — press Save to apply.</p>
+    </div>
+  );
+}
+
+function GalleryPicker({
+  paths,
+  onChange,
+}: {
+  paths: string[];
+  onChange: (paths: string[]) => void;
+}) {
+  const [uploading, setUploading] = useState(false);
+
+  async function addFiles(files: FileList | null) {
+    if (!files || files.length === 0) return;
+    setUploading(true);
+    const added: string[] = [];
+    for (const file of Array.from(files)) {
+      const path = await uploadPhoto(file);
+      if (path) added.push(path);
+    }
+    setUploading(false);
+    if (added.length > 0) onChange([...paths, ...added]);
+  }
+
+  return (
+    <div className="space-y-1.5">
+      <Label>Gallery photos (shown on the project's page)</Label>
+      {paths.length > 0 && (
+        <div className="grid grid-cols-3 gap-2 sm:grid-cols-4">
+          {paths.map((path, i) => (
+            <div key={path} className="group relative">
+              <img src={mediaUrl(path)} alt="" className="h-20 w-full rounded-lg border object-cover" />
+              <button
+                type="button"
+                onClick={() => onChange(paths.filter((_, j) => j !== i))}
+                className="absolute right-1 top-1 rounded-full bg-background/80 px-1.5 text-xs text-foreground opacity-0 transition-opacity group-hover:opacity-100"
+                aria-label="Remove photo"
+              >
+                ✕
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+      <Input
+        type="file"
+        accept="image/*"
+        multiple
+        disabled={uploading}
+        onChange={(e) => {
+          void addFiles(e.target.files);
+          e.target.value = "";
+        }}
+      />
+      <p className="text-xs text-muted-foreground">
+        {uploading ? "Uploading…" : "Pick several photos at once — press Save to apply."}
+      </p>
     </div>
   );
 }

@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import type { Project, Research, Certification } from "@/lib/content";
 import { mediaUrl } from "@/lib/site-content";
 
@@ -13,25 +14,27 @@ export function CertItem({ c }: { c: Certification }) {
   );
 }
 
-export function ProjectCard({ p }: { p: Project }) {
+export function ProjectCard({ p, index }: { p: Project; index: number }) {
   return (
-    <article className="group rounded-xl border bg-card p-6 transition-all hover:-translate-y-1 hover:border-primary hover:shadow-glow">
-      {p.image && (
-        <img
-          src={mediaUrl(p.image)}
-          alt={p.title}
-          className="mb-4 h-44 w-full rounded-lg border object-cover"
-        />
-      )}
-      <div className="mb-3 text-xs text-muted-foreground">{p.year}</div>
-      <h3 className="text-xl font-semibold group-hover:text-primary">{p.title}</h3>
-      <p className="mt-2 text-sm text-muted-foreground">{p.summary}</p>
-      <div className="mt-4 flex flex-wrap gap-2">
-        {p.tags.map((t) => (
-          <span key={t} className="rounded-full bg-secondary px-3 py-1 text-xs text-secondary-foreground">{t}</span>
-        ))}
-      </div>
-    </article>
+    <Link to="/projects/$projectId" params={{ projectId: String(index) }} className="block">
+      <article className="group h-full rounded-xl border bg-card p-6 transition-all hover:-translate-y-1 hover:border-primary hover:shadow-glow">
+        {p.image && (
+          <img
+            src={mediaUrl(p.image)}
+            alt={p.title}
+            className="mb-4 h-44 w-full rounded-lg border object-cover"
+          />
+        )}
+        <div className="mb-3 text-xs text-muted-foreground">{p.year}</div>
+        <h3 className="text-xl font-semibold group-hover:text-primary">{p.title}</h3>
+        <p className="mt-2 text-sm text-muted-foreground">{p.summary}</p>
+        <div className="mt-4 flex flex-wrap gap-2">
+          {p.tags.map((t) => (
+            <span key={t} className="rounded-full bg-secondary px-3 py-1 text-xs text-secondary-foreground">{t}</span>
+          ))}
+        </div>
+      </article>
+    </Link>
   );
 }
 
