@@ -15,7 +15,7 @@ export const profile: Profile = {
   location: "Lagos, Nigeria",
   email: "mashkur.m2300593@st.futminna.edu.ng",
   tagline: "I design machines that sense, think and move — blending mechanics, electronics and code.",
-  skills: ["Robotics", "Embedded C/C++", "ROS 2", "Control Systems", "SolidWorks", "PCB Design", "Python", "Computer Vision"],
+  skills: ["Robotics", "Embedded C/C++", "ROS 2", "Control Systems", "AI/ML", "IOT", "Python", "Cyber Security"],
 };
 
 export type Project = { title: string; summary: string; tags: string[]; year: string; image?: string; gallery?: string[] };
