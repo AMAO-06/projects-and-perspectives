@@ -35,7 +35,7 @@ function Index() {
         <div className="relative mx-auto max-w-6xl px-6 pb-24 pt-32 md:pt-44">
           <p className="mb-4 flex items-center gap-2 font-mono text-xs uppercase tracking-[0.3em] text-primary">
             <span className="animate-led h-2 w-2 rounded-full bg-primary" aria-hidden="true" />
-            System online · {profile.title} · {profile.location}
+            SYSTEM ONLINE · MECHATRONICS ENGINEER · OGUN, NIGERIA
           </p>
           <h1 className="max-w-3xl text-5xl font-bold leading-tight md:text-7xl">
             Hi, I'm <span className="text-gradient">{profile.name}</span>
