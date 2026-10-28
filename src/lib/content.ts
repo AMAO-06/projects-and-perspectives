@@ -29,7 +29,7 @@ export const projects: Project[] = [
   { title: "Prosthetic Hand Prototype", summary: "3D-printed hand driven by EMG signals for grip control.", tags: ["EMG", "3D Printing", "Biomech"], year: "2023" },
 ];
 
-export type Certification = { title: string; issuer: string; year: string; id?: string };
+export type Certification = { title: string; issuer: string; year: string; id?: string; image?: string; gallery?: string[] };
 
 export const certifications: Certification[] = [
   { title: "Certified SOLIDWORKS Associate (CSWA)", issuer: "Dassault Systèmes", year: "2025" },
@@ -39,7 +39,7 @@ export const certifications: Certification[] = [
   { title: "Python for Everybody Specialization", issuer: "University of Michigan · Coursera", year: "2023" },
 ];
 
-export type Research = { title: string; venue: string; year: string; abstract: string };
+export type Research = { title: string; venue: string; year: string; abstract: string; image?: string; gallery?: string[] };
 
 export const research: Research[] = [
   { title: "Adaptive PID Tuning for Low-Cost Mobile Robots in Unstructured Terrain", venue: "Final Year Thesis", year: "2026", abstract: "A comparison of fuzzy and gain-scheduled PID approaches for affordable differential-drive robots." },

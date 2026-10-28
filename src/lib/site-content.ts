@@ -21,3 +21,14 @@ export const siteContentQueryOptions = queryOptions({
 export function mediaUrl(path: string): string {
   return `/api/public/media?path=${encodeURIComponent(path)}`;
 }
+
+/** Cover photo first, then the gallery, without duplicates. */
+export function photosOf(entry: { image?: string | undefined; gallery?: string[] | undefined } | undefined): string[] {
+  if (!entry) return [];
+  return Array.from(new Set([...(entry.image ? [entry.image] : []), ...(entry.gallery ?? [])]));
+}
+
+/** Zero-padded catalogue number, e.g. PRJ-01. */
+export function entryCode(prefix: string, index: number): string {
+  return `${prefix}-${String(index + 1).padStart(2, "0")}`;
+}
