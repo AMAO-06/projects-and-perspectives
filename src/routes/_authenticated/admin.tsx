@@ -3,6 +3,8 @@ import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState, type ReactNode } from "react";
 import { toast } from "sonner";
+import { ArrowDown, ArrowUp, GripVertical } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { mediaUrl, siteContentQueryOptions, type SectionName, type SiteContent } from "@/lib/site-content";
 import { saveSiteSection } from "@/lib/site-content.functions";
@@ -27,6 +29,96 @@ async function uploadPhoto(file: File): Promise<string | null> {
     return null;
   }
   return path;
+}
+
+/** Move one item inside a list (used by drag-and-drop and the arrow buttons). */
+function move<T>(list: T[], from: number, to: number): T[] {
+  if (to < 0 || to >= list.length || from === to) return list;
+  const item = list[from];
+  if (item === undefined) return list;
+  const next = [...list];
+  next.splice(from, 1);
+  next.splice(to, 0, item);
+  return next;
+}
+
+let dragging: { section: string; index: number } | null = null;
+
+function EntryShell({
+  section,
+  index,
+  count,
+  label,
+  onMove,
+  onRemove,
+  removeLabel = "Remove",
+  children,
+}: {
+  section: string;
+  index: number;
+  count: number;
+  label: string;
+  onMove: (from: number, to: number) => void;
+  onRemove: () => void;
+  removeLabel?: string;
+  children: ReactNode;
+}) {
+  const [over, setOver] = useState(false);
+  return (
+    <div
+      className={cn("space-y-3 rounded-lg border p-4 transition-colors", over && "border-primary bg-primary/5")}
+      onDragOver={(e) => {
+        if (dragging?.section === section) {
+          e.preventDefault();
+          setOver(true);
+        }
+      }}
+      onDragLeave={() => setOver(false)}
+      onDrop={(e) => {
+        e.preventDefault();
+        setOver(false);
+        const d = dragging;
+        dragging = null;
+        if (d && d.section === section) onMove(d.index, index);
+      }}
+    >
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            draggable
+            onDragStart={(e) => {
+              dragging = { section, index };
+              e.dataTransfer.effectAllowed = "move";
+              e.dataTransfer.setData("text/plain", `${section}:${index}`);
+            }}
+            onDragEnd={() => {
+              dragging = null;
+              setOver(false);
+            }}
+            className="cursor-grab rounded p-1 text-muted-foreground hover:text-primary active:cursor-grabbing"
+            aria-label={`Drag to reorder ${label}`}
+            title="Drag to reorder"
+          >
+            <GripVertical className="h-5 w-5" />
+          </button>
+          <span className="font-mono text-xs text-muted-foreground">{label}</span>
+        </div>
+        <div className="flex gap-1">
+          <Button variant="outline" size="icon" className="h-8 w-8" disabled={index === 0} onClick={() => onMove(index, index - 1)} aria-label="Move up">
+            <ArrowUp className="h-4 w-4" />
+          </Button>
+          <Button variant="outline" size="icon" className="h-8 w-8" disabled={index === count - 1} onClick={() => onMove(index, index + 1)} aria-label="Move down">
+            <ArrowDown className="h-4 w-4" />
+          </Button>
+        </div>
+      </div>
+      {children}
+      <Button variant="outline" size="sm" onClick={onRemove}>
+        {removeLabel}
+      </Button>
+    </div>
+  );
 }
 
 function AdminPage() {
@@ -116,7 +208,7 @@ function AdminPage() {
         </Button>
       </div>
       <p className="mt-2 text-sm text-muted-foreground">
-        Changes go live on the public site as soon as you press Save.
+        Changes go live on the public site as soon as you press Save. Drag the grip handle (or use the arrows) to reorder entries, then press Save.
       </p>
 
       <div className="mt-10 space-y-8">
@@ -153,7 +245,16 @@ function AdminPage() {
 
         <SectionCard title="Projects" section="projects" onSave={save} saving={saving}>
           {draft.projects.map((p, i) => (
-            <div key={i} className="space-y-3 rounded-lg border p-4">
+            <EntryShell
+              key={i}
+              section="projects"
+              index={i}
+              count={draft.projects.length}
+              label={`PRJ-${String(i + 1).padStart(2, "0")}`}
+              onMove={(from, to) => setProjects(move(draft.projects, from, to))}
+              onRemove={() => setProjects(draft.projects.filter((_, j) => j !== i))}
+              removeLabel="Remove project"
+            >
               <div className="grid gap-3 sm:grid-cols-2">
                 <Field label="Title" value={p.title} onChange={(v) => updateList("projects", i, { title: v })} />
                 <Field label="Year" value={p.year} onChange={(v) => updateList("projects", i, { year: v })} />
@@ -167,18 +268,16 @@ function AdminPage() {
                 }
               />
               <PhotoPicker
-                 label="Project photo (card cover)"
+                label="Project photo (card cover)"
                 path={p.image}
                 onPicked={(path) => updateList("projects", i, { image: path })}
               />
               <GalleryPicker
+                label="Gallery photos (shown on the project's page)"
                 paths={p.gallery ?? []}
                 onChange={(gallery) => updateList("projects", i, { gallery })}
               />
-              <Button variant="outline" size="sm" onClick={() => setProjects(draft.projects.filter((_, j) => j !== i))}>
-                Remove project
-              </Button>
-            </div>
+            </EntryShell>
           ))}
           <Button size="sm" onClick={() => setProjects([...draft.projects, { title: "", summary: "", tags: [], year: "" }])}>
             + Add project
@@ -187,17 +286,32 @@ function AdminPage() {
 
         <SectionCard title="Research" section="research" onSave={save} saving={saving}>
           {draft.research.map((r, i) => (
-            <div key={i} className="space-y-3 rounded-lg border p-4">
+            <EntryShell
+              key={i}
+              section="research"
+              index={i}
+              count={draft.research.length}
+              label={`RSH-${String(i + 1).padStart(2, "0")}`}
+              onMove={(from, to) => setResearch(move(draft.research, from, to))}
+              onRemove={() => setResearch(draft.research.filter((_, j) => j !== i))}
+            >
               <div className="grid gap-3 sm:grid-cols-2">
                 <Field label="Title" value={r.title} onChange={(v) => updateList("research", i, { title: v })} />
                 <Field label="Venue" value={r.venue} onChange={(v) => updateList("research", i, { venue: v })} />
               </div>
               <Field label="Year" value={r.year} onChange={(v) => updateList("research", i, { year: v })} />
               <AreaField label="Abstract" value={r.abstract} onChange={(v) => updateList("research", i, { abstract: v })} />
-              <Button variant="outline" size="sm" onClick={() => setResearch(draft.research.filter((_, j) => j !== i))}>
-                Remove
-              </Button>
-            </div>
+              <PhotoPicker
+                label="Cover photo (optional)"
+                path={r.image}
+                onPicked={(path) => updateList("research", i, { image: path })}
+              />
+              <GalleryPicker
+                label="Gallery photos (figures, setup, results)"
+                paths={r.gallery ?? []}
+                onChange={(gallery) => updateList("research", i, { gallery })}
+              />
+            </EntryShell>
           ))}
           <Button
             size="sm"
@@ -209,20 +323,31 @@ function AdminPage() {
 
         <SectionCard title="Certifications" section="certifications" onSave={save} saving={saving}>
           {draft.certifications.map((c, i) => (
-            <div key={i} className="space-y-3 rounded-lg border p-4">
+            <EntryShell
+              key={i}
+              section="certifications"
+              index={i}
+              count={draft.certifications.length}
+              label={`CRT-${String(i + 1).padStart(2, "0")}`}
+              onMove={(from, to) => setCertifications(move(draft.certifications, from, to))}
+              onRemove={() => setCertifications(draft.certifications.filter((_, j) => j !== i))}
+            >
               <div className="grid gap-3 sm:grid-cols-3">
                 <Field label="Title" value={c.title} onChange={(v) => updateList("certifications", i, { title: v })} />
                 <Field label="Issuer" value={c.issuer} onChange={(v) => updateList("certifications", i, { issuer: v })} />
                 <Field label="Year" value={c.year} onChange={(v) => updateList("certifications", i, { year: v })} />
               </div>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setCertifications(draft.certifications.filter((_, j) => j !== i))}
-              >
-                Remove
-              </Button>
-            </div>
+              <PhotoPicker
+                label="Certificate image (optional)"
+                path={c.image}
+                onPicked={(path) => updateList("certifications", i, { image: path })}
+              />
+              <GalleryPicker
+                label="More photos (badge, transcript, project work)"
+                paths={c.gallery ?? []}
+                onChange={(gallery) => updateList("certifications", i, { gallery })}
+              />
+            </EntryShell>
           ))}
           <Button
             size="sm"
@@ -328,9 +453,11 @@ function PhotoPicker({
 }
 
 function GalleryPicker({
+  label,
   paths,
   onChange,
 }: {
+  label: string;
   paths: string[];
   onChange: (paths: string[]) => void;
 }) {
@@ -350,7 +477,7 @@ function GalleryPicker({
 
   return (
     <div className="space-y-1.5">
-      <Label>Gallery photos (shown on the project's page)</Label>
+      <Label>{label}</Label>
       {paths.length > 0 && (
         <div className="grid grid-cols-3 gap-2 sm:grid-cols-4">
           {paths.map((path, i) => (
