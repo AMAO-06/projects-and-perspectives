@@ -19,7 +19,9 @@ import { Route as ProjectsRouteImport } from './routes/projects'
 import { Route as ResearchRouteImport } from './routes/research'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as CertificationsCertIdRouteImport } from './routes/certifications_.$certId'
 import { Route as ProjectsProjectIdRouteImport } from './routes/projects_.$projectId'
+import { Route as ResearchResearchIdRouteImport } from './routes/research_.$researchId'
 import { Route as ApiPublicMediaRouteImport } from './routes/api.public.media'
 
 const IndexRoute = IndexRouteImport.update({
@@ -71,9 +73,19 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const CertificationsCertIdRoute = CertificationsCertIdRouteImport.update({
+  id: '/certifications_/$certId',
+  path: '/certifications/$certId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProjectsProjectIdRoute = ProjectsProjectIdRouteImport.update({
   id: '/projects_/$projectId',
   path: '/projects/$projectId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResearchResearchIdRoute = ResearchResearchIdRouteImport.update({
+  id: '/research_/$researchId',
+  path: '/research/$researchId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPublicMediaRoute = ApiPublicMediaRouteImport.update({
@@ -92,7 +104,9 @@ export interface FileRoutesByFullPath {
   '/research': typeof ResearchRoute
   '/reset-password': typeof ResetPasswordRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/certifications/$certId': typeof CertificationsCertIdRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
+  '/research/$researchId': typeof ResearchResearchIdRoute
   '/api/public/media': typeof ApiPublicMediaRoute
 }
 export interface FileRoutesByTo {
@@ -105,7 +119,9 @@ export interface FileRoutesByTo {
   '/research': typeof ResearchRoute
   '/reset-password': typeof ResetPasswordRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/certifications/$certId': typeof CertificationsCertIdRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
+  '/research/$researchId': typeof ResearchResearchIdRoute
   '/api/public/media': typeof ApiPublicMediaRoute
 }
 export interface FileRoutesById {
@@ -120,7 +136,9 @@ export interface FileRoutesById {
   '/research': typeof ResearchRoute
   '/reset-password': typeof ResetPasswordRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
+  '/certifications_/$certId': typeof CertificationsCertIdRoute
   '/projects_/$projectId': typeof ProjectsProjectIdRoute
+  '/research_/$researchId': typeof ResearchResearchIdRoute
   '/api/public/media': typeof ApiPublicMediaRoute
 }
 export interface FileRouteTypes {
@@ -135,7 +153,9 @@ export interface FileRouteTypes {
     | '/research'
     | '/reset-password'
     | '/admin'
+    | '/certifications/$certId'
     | '/projects/$projectId'
+    | '/research/$researchId'
     | '/api/public/media'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -148,7 +168,9 @@ export interface FileRouteTypes {
     | '/research'
     | '/reset-password'
     | '/admin'
+    | '/certifications/$certId'
     | '/projects/$projectId'
+    | '/research/$researchId'
     | '/api/public/media'
   id:
     | '__root__'
@@ -162,7 +184,9 @@ export interface FileRouteTypes {
     | '/research'
     | '/reset-password'
     | '/_authenticated/admin'
+    | '/certifications_/$certId'
     | '/projects_/$projectId'
+    | '/research_/$researchId'
     | '/api/public/media'
   fileRoutesById: FileRoutesById
 }
@@ -176,7 +200,9 @@ export interface RootRouteChildren {
   ProjectsRoute: typeof ProjectsRoute
   ResearchRoute: typeof ResearchRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  CertificationsCertIdRoute: typeof CertificationsCertIdRoute
   ProjectsProjectIdRoute: typeof ProjectsProjectIdRoute
+  ResearchResearchIdRoute: typeof ResearchResearchIdRoute
   ApiPublicMediaRoute: typeof ApiPublicMediaRoute
 }
 
@@ -252,11 +278,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/certifications_/$certId': {
+      id: '/certifications_/$certId'
+      path: '/certifications/$certId'
+      fullPath: '/certifications/$certId'
+      preLoaderRoute: typeof CertificationsCertIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/projects_/$projectId': {
       id: '/projects_/$projectId'
       path: '/projects/$projectId'
       fullPath: '/projects/$projectId'
       preLoaderRoute: typeof ProjectsProjectIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/research_/$researchId': {
+      id: '/research_/$researchId'
+      path: '/research/$researchId'
+      fullPath: '/research/$researchId'
+      preLoaderRoute: typeof ResearchResearchIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/media': {
@@ -290,7 +330,9 @@ const rootRouteChildren: RootRouteChildren = {
   ProjectsRoute: ProjectsRoute,
   ResearchRoute: ResearchRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  CertificationsCertIdRoute: CertificationsCertIdRoute,
   ProjectsProjectIdRoute: ProjectsProjectIdRoute,
+  ResearchResearchIdRoute: ResearchResearchIdRoute,
   ApiPublicMediaRoute: ApiPublicMediaRoute,
 }
 export const routeTree = rootRouteImport
