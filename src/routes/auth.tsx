@@ -23,7 +23,7 @@ function safeRedirect(to: string | undefined): string {
 function AuthPage() {
   const navigate = useNavigate();
   const { redirect } = Route.useSearch();
-  const [mode, setMode] = useState<"signin" | "signup" | "forgot">("signin");
+  const [mode, setMode] = useState<"signin" | "forgot">("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
@@ -45,19 +45,6 @@ function AuthPage() {
         return;
       }
 
-      if (mode === "signup") {
-        const { data, error } = await supabase.auth.signUp({ email, password });
-        if (error) {
-          toast.error(error.message);
-        } else if (!data.session) {
-          toast.success("Account created — check your email to confirm, then sign in.");
-          setMode("signin");
-        } else {
-          await navigate({ to: safeRedirect(redirect) });
-        }
-        return;
-      }
-
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) {
         toast.error(error.message);
@@ -71,7 +58,6 @@ function AuthPage() {
 
   const titles: Record<typeof mode, string> = {
     signin: "Sign in",
-    signup: "Create your admin account",
     forgot: "Reset your password",
   };
 
@@ -110,7 +96,7 @@ function AuthPage() {
           </div>
         )}
         <Button type="submit" className="w-full" disabled={busy}>
-          {busy ? "Please wait…" : mode === "forgot" ? "Send reset link" : mode === "signup" ? "Create account" : "Sign in"}
+          {busy ? "Please wait…" : mode === "forgot" ? "Send reset link" : "Sign in"}
         </Button>
       </form>
       <div className="mt-6 space-y-2 text-sm text-muted-foreground">
@@ -118,9 +104,6 @@ function AuthPage() {
           <>
             <button type="button" className="block hover:text-primary" onClick={() => setMode("forgot")}>
               Forgot your password?
-            </button>
-            <button type="button" className="block hover:text-primary" onClick={() => setMode("signup")}>
-              Don't have an account? Create one
             </button>
           </>
         )}

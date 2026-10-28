@@ -3,6 +3,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { siteContentQueryOptions } from "@/lib/site-content";
 import { profile as fallbackProfile } from "@/lib/content";
 import { CertItem } from "@/components/Cards";
+import { PageHead } from "@/components/PageHead";
 
 export const Route = createFileRoute("/certifications")({
   loader: ({ context }) => context.queryClient.ensureQueryData(siteContentQueryOptions),
@@ -21,10 +22,9 @@ function CertificationsPage() {
   const { certifications } = useSuspenseQuery(siteContentQueryOptions).data;
   return (
     <section className="mx-auto max-w-4xl px-6 py-20">
-      <h1 className="text-5xl font-bold">Certifications</h1>
-      <p className="mt-4 text-muted-foreground">Certificates, courses and professional credentials.</p>
+      <PageHead eyebrow="03 — Credentials" title="Certifications" blurb="Certificates, courses and professional credentials." />
       <div className="mt-12 grid gap-6 sm:grid-cols-2">
-        {certifications.map((c) => <CertItem key={`${c.title}-${c.issuer}`} c={c} />)}
+        {certifications.map((c, i) => <CertItem key={`${c.title}-${c.issuer}`} c={c} index={i} />)}
       </div>
     </section>
   );

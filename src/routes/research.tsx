@@ -3,6 +3,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { siteContentQueryOptions } from "@/lib/site-content";
 import { profile as fallbackProfile } from "@/lib/content";
 import { ResearchItem } from "@/components/Cards";
+import { PageHead } from "@/components/PageHead";
 
 export const Route = createFileRoute("/research")({
   loader: ({ context }) => context.queryClient.ensureQueryData(siteContentQueryOptions),
@@ -21,10 +22,9 @@ function ResearchPage() {
   const { research } = useSuspenseQuery(siteContentQueryOptions).data;
   return (
     <section className="mx-auto max-w-4xl px-6 py-20">
-      <h1 className="text-5xl font-bold">Research</h1>
-      <p className="mt-4 text-muted-foreground">Papers, thesis work and ongoing studies.</p>
+      <PageHead eyebrow="02 — Research" title="Research" blurb="Papers, thesis work and ongoing studies." />
       <div className="mt-12 space-y-12">
-        {research.map((r) => <ResearchItem key={`${r.title}-${r.year}`} r={r} />)}
+        {research.map((r, i) => <ResearchItem key={`${r.title}-${r.year}`} r={r} index={i} />)}
       </div>
     </section>
   );

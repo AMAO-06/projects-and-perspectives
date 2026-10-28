@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { mediaUrl, siteContentQueryOptions } from "@/lib/site-content";
 import { profile as fallbackProfile } from "@/lib/content";
+import { Eyebrow } from "@/components/PageHead";
 
 export const Route = createFileRoute("/about")({
   loader: ({ context }) => context.queryClient.ensureQueryData(siteContentQueryOptions),
@@ -20,7 +21,8 @@ function AboutPage() {
   const { profile } = useSuspenseQuery(siteContentQueryOptions).data;
   return (
     <section className="mx-auto max-w-4xl px-6 py-20">
-      <h1 className="text-5xl font-bold">About me</h1>
+      <Eyebrow>04 — Profile</Eyebrow>
+      <h1 className="mt-3 text-5xl font-bold">About me</h1>
       {profile.photo && (
         <img
           src={mediaUrl(profile.photo)}
@@ -36,7 +38,7 @@ function AboutPage() {
       <h2 className="mt-14 text-2xl font-bold">Skills</h2>
       <div className="mt-6 flex flex-wrap gap-3">
         {profile.skills.map((s) => (
-          <span key={s} className="rounded-lg border bg-card px-4 py-2 text-sm">{s}</span>
+          <span key={s} className="frame rounded-lg border bg-card px-4 py-2 font-mono text-sm">{s}</span>
         ))}
       </div>
     </section>

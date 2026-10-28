@@ -4,6 +4,8 @@ import hero from "@/assets/hero.jpg";
 import { mediaUrl, siteContentQueryOptions } from "@/lib/site-content";
 import { profile as fallbackProfile } from "@/lib/content";
 import { ProjectCard, ResearchItem } from "@/components/Cards";
+import { Eyebrow } from "@/components/PageHead";
+import { Gear } from "@/components/Gear";
 
 export const Route = createFileRoute("/")({
   loader: ({ context }) => context.queryClient.ensureQueryData(siteContentQueryOptions),
@@ -26,11 +28,18 @@ function Index() {
     <>
       <section className="relative overflow-hidden">
         <img src={heroSrc} alt="Featured work" width={1600} height={1008} className="absolute inset-0 h-full w-full object-cover opacity-50" />
+        <div className="bg-circuit mask-fade-b absolute inset-0 opacity-80" aria-hidden="true" />
         <div className="absolute inset-0 bg-hero-fade" />
+        <Gear className="animate-spin-slow absolute -right-24 top-10 hidden h-[28rem] w-[28rem] text-primary/20 md:block" />
+        <Gear className="animate-spin-slow absolute right-56 top-72 hidden h-48 w-48 text-accent/20 [animation-direction:reverse] md:block" />
         <div className="relative mx-auto max-w-6xl px-6 pb-24 pt-32 md:pt-44">
-          <p className="mb-4 text-sm uppercase tracking-[0.3em] text-primary">{profile.title} · {profile.location}</p>
+          <p className="mb-4 flex items-center gap-2 font-mono text-xs uppercase tracking-[0.3em] text-primary">
+            <span className="animate-led h-2 w-2 rounded-full bg-primary" aria-hidden="true" />
+            System online · {profile.title} · {profile.location}
+          </p>
           <h1 className="max-w-3xl text-5xl font-bold leading-tight md:text-7xl">
             Hi, I'm <span className="text-gradient">{profile.name}</span>
+            <span className="animate-cursor ml-1 inline-block h-[0.8em] w-[0.12em] translate-y-[0.1em] bg-primary align-baseline" aria-hidden="true" />
           </h1>
           <p className="mt-6 max-w-xl text-lg text-muted-foreground">{profile.tagline}</p>
           <div className="mt-8 flex gap-4">
@@ -42,8 +51,11 @@ function Index() {
 
       <section className="mx-auto max-w-6xl px-6 py-20">
         <div className="mb-10 flex items-end justify-between">
-          <h2 className="text-3xl font-bold md:text-4xl">Featured projects</h2>
-          <Link to="/projects" className="text-sm text-primary hover:underline">All projects →</Link>
+          <div>
+            <Eyebrow>01 — Build log</Eyebrow>
+            <h2 className="mt-2 text-3xl font-bold md:text-4xl">Featured projects</h2>
+          </div>
+          <Link to="/projects" className="font-mono text-xs uppercase tracking-wider text-primary hover:underline">All projects →</Link>
         </div>
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {projects.slice(0, 3).map((p, i) => <ProjectCard key={`${p.title}-${p.year}`} p={p} index={i} />)}
@@ -53,11 +65,14 @@ function Index() {
       <section className="grid-lines border-y">
         <div className="mx-auto max-w-6xl px-6 py-20">
           <div className="mb-10 flex items-end justify-between">
-            <h2 className="text-3xl font-bold md:text-4xl">Latest research</h2>
-            <Link to="/research" className="text-sm text-primary hover:underline">All research →</Link>
+            <div>
+              <Eyebrow>02 — Lab notes</Eyebrow>
+              <h2 className="mt-2 text-3xl font-bold md:text-4xl">Latest research</h2>
+            </div>
+            <Link to="/research" className="font-mono text-xs uppercase tracking-wider text-primary hover:underline">All research →</Link>
           </div>
           <div className="space-y-10">
-            {research.slice(0, 2).map((r) => <ResearchItem key={`${r.title}-${r.year}`} r={r} />)}
+            {research.slice(0, 2).map((r, i) => <ResearchItem key={`${r.title}-${r.year}`} r={r} index={i} />)}
           </div>
         </div>
       </section>
