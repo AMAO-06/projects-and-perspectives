@@ -21,7 +21,9 @@ export const Route = createFileRoute("/certifications_/$certId")({
         { title },
         { name: "description", content: cert ? `${cert.title}, issued by ${cert.issuer} (${cert.year}).` : "Certification details." },
         { property: "og:title", content: title },
+        { property: "og:description", content: cert ? `${cert.title}, issued by ${cert.issuer} (${cert.year}).` : "Certification details." },
         { property: "og:type", content: "article" },
+        { name: "twitter:card", content: "summary_large_image" },
       ],
     };
   },

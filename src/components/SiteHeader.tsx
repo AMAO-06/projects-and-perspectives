@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import { useOwnerSession } from "@/lib/owner-session";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { siteContentQueryOptions } from "@/lib/site-content";
 
@@ -30,9 +31,23 @@ export function SiteHeader() {
               {l.label}
             </Link>
           ))}
+          <OwnerLink />
         </div>
       </nav>
     </header>
+  );
+}
+
+function OwnerLink() {
+  const ownerSignedIn = useOwnerSession();
+  return (
+    <Link
+      to={ownerSignedIn ? "/admin" : "/auth"}
+      search={ownerSignedIn ? undefined : { redirect: undefined }}
+      className="whitespace-nowrap text-primary transition-colors hover:underline"
+    >
+      {ownerSignedIn ? "Edit portfolio" : "Owner sign in"}
+    </Link>
   );
 }
 

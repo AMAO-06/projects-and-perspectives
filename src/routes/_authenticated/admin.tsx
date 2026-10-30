@@ -16,7 +16,15 @@ import { Textarea } from "@/components/ui/textarea";
 export const Route = createFileRoute("/_authenticated/admin")({
   loader: ({ context }) => context.queryClient.ensureQueryData(siteContentQueryOptions),
   head: () => ({
-    meta: [{ title: "Admin — Alaran Mashkur" }],
+    meta: [
+      { title: "Admin — Alaran Mashkur" },
+      { name: "description", content: "Manage Alaran Mashkur's portfolio, projects, research and certifications." },
+      { property: "og:title", content: "Admin — Alaran Mashkur" },
+      { property: "og:description", content: "Private portfolio editing for the site owner." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+      { name: "robots", content: "noindex, nofollow" },
+    ],
   }),
   component: AdminPage,
 });
@@ -183,6 +191,10 @@ function AdminPage() {
     queryClient.clear();
     await supabase.auth.signOut();
     navigate({ to: "/auth", search: { redirect: undefined }, replace: true });
+  }
+
+  if (admin === null) {
+    return <section className="mx-auto max-w-4xl px-6 py-16" aria-live="polite">Checking owner access…</section>;
   }
 
   if (admin === false) {
