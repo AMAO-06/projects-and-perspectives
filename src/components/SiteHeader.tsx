@@ -1,4 +1,5 @@
-import { Link, useRouter } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
+import { useOwnerSession } from "@/lib/owner-session";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { siteContentQueryOptions } from "@/lib/site-content";
 
@@ -38,7 +39,7 @@ export function SiteHeader() {
 }
 
 function OwnerLink() {
-  const { ownerSignedIn } = useRouter().options.context;
+  const ownerSignedIn = useOwnerSession();
   return (
     <Link
       to={ownerSignedIn ? "/admin" : "/auth"}

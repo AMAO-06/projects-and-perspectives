@@ -8,7 +8,15 @@ import { toast } from "sonner";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
-    meta: [{ title: "Sign in — Alaran Mashkur" }],
+    meta: [
+      { title: "Owner sign in — Alaran Mashkur" },
+      { name: "description", content: "Owner sign-in for Alaran Mashkur's portfolio." },
+      { property: "og:title", content: "Owner sign in — Alaran Mashkur" },
+      { property: "og:description", content: "Secure access to portfolio editing." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+      { name: "robots", content: "noindex, nofollow" },
+    ],
   }),
   validateSearch: (search: Record<string, unknown>) => ({
     redirect: typeof search["redirect"] === "string" ? search["redirect"] : undefined,

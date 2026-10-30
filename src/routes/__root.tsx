@@ -8,7 +8,9 @@ import {
   Scripts,
   type ErrorComponentProps,
 } from "@tanstack/react-router";
-import { useEffect, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { OwnerSessionContext } from "@/lib/owner-session";
 import { Toaster } from "@/components/ui/sonner";
 import { siteContentQueryOptions } from "@/lib/site-content";
 
@@ -117,15 +119,41 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const router = useRouter();
+  const [ownerSignedIn, setOwnerSignedIn] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+    let generation = 0;
+    async function refreshOwner() {
+      const current = ++generation;
+      const { data } = await supabase.auth.getUser();
+      if (!active || current !== generation) return;
+      if (!data.user) { setOwnerSignedIn(false); return; }
+      const { data: admin } = await supabase.rpc("has_role", { _user_id: data.user.id, _role: "admin" });
+      if (active && current === generation) setOwnerSignedIn(Boolean(admin));
+    }
+    void refreshOwner();
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+      if (event !== "SIGNED_IN" && event !== "SIGNED_OUT" && event !== "USER_UPDATED") return;
+      if (event === "SIGNED_OUT") { generation++; setOwnerSignedIn(false); }
+      else setTimeout(() => { if (active) void refreshOwner(); }, 0);
+      void router.invalidate();
+      if (event !== "SIGNED_OUT") void queryClient.invalidateQueries();
+    });
+    return () => { active = false; subscription.unsubscribe(); };
+  }, [queryClient, router]);
 
   return (
     <QueryClientProvider client={queryClient}>
+      <OwnerSessionContext.Provider value={ownerSignedIn}>
       <SiteHeader />
       <main className="min-h-screen">
         <Outlet />
       </main>
       <SiteFooter />
       <Toaster position="top-center" />
+      </OwnerSessionContext.Provider>
     </QueryClientProvider>
   );
 }
