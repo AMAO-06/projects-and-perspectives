@@ -43,7 +43,7 @@ function OwnerLink() {
   return (
     <Link
       to={ownerSignedIn ? "/admin" : "/auth"}
-      search={ownerSignedIn ? undefined : { redirect: undefined }}
+      search={{ redirect: undefined }}
       className="whitespace-nowrap text-primary transition-colors hover:underline"
     >
       {ownerSignedIn ? "Edit portfolio" : "Owner sign in"}
