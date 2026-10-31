@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { clearRecoveryIntent, readRecoveryIntent, tokenIsRecovery } from "@/lib/recovery-intent";
 
 export const Route = createFileRoute("/reset-password")({
   head: () => ({
@@ -30,11 +31,9 @@ export function ResetPassword() {
 
   useEffect(() => {
     let active = true;
-    // Auth consumes and removes the hash while establishing the recovery session.
-    // Remember the link before initialization, rather than rechecking it on submit.
-    const hash = new URLSearchParams(window.location.hash.slice(1));
-    const recoveryLink = hash.get("type") === "recovery";
-    const linkError = hash.get("error_description");
+    // Auth consumes the hash during initialization, often before this page mounts.
+    // The page shell records the link first; the token's recovery claim is a fallback.
+    const { recoveryLink, linkError } = readRecoveryIntent();
     async function validateRecovery() {
       try {
         const { data, error: authError } = await supabase.auth.getUser();
@@ -42,6 +41,7 @@ export function ResetPassword() {
         const valid = !authError && Boolean(data.user);
         setRecoveryReady(valid);
         setChecking(false);
+        if (valid) setError("");
         if (!valid) setError("This reset link has expired. Please request a new one.");
       } catch {
         if (!active) return;
@@ -63,8 +63,19 @@ export function ResetPassword() {
     } else if (recoveryLink) {
       void validateRecovery();
     } else {
-      setChecking(false);
-      setError("Open the reset link from your email, or request a new one.");
+      void supabase.auth.getSession().then(({ data }) => {
+        if (!active) return;
+        if (tokenIsRecovery(data.session?.access_token)) {
+          void validateRecovery();
+        } else {
+          setChecking(false);
+          setError("Open the reset link from your email, or request a new one.");
+        }
+      }).catch(() => {
+        if (!active) return;
+        setChecking(false);
+        setError("Open the reset link from your email, or request a new one.");
+      });
     }
     return () => { active = false; subscription.unsubscribe(); };
   }, []);
@@ -82,6 +93,7 @@ export function ResetPassword() {
       if (error) {
         setError(error.message);
       } else {
+        clearRecoveryIntent();
         setDone(true);
         setRecoveryReady(false);
       }

@@ -13,6 +13,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { OwnerSessionContext } from "@/lib/owner-session";
 import { Toaster } from "@/components/ui/sonner";
 import { siteContentQueryOptions } from "@/lib/site-content";
+import { recoveryCaptureScript } from "@/lib/recovery-intent";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
@@ -107,6 +108,7 @@ function RootShell({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <head>
+        <script dangerouslySetInnerHTML={{ __html: recoveryCaptureScript }} />
         <HeadContent />
       </head>
       <body>
