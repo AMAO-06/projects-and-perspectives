@@ -11,3 +11,4 @@
 
 - Keep portfolio pages public and enforce editing through authenticated server functions and admin-scoped policies, so navigation never grants write access.
 - Maintain owner navigation through one root auth subscriber and the OwnerSessionContext, so sign-in and sign-out update the entire site consistently.
+- Preserve password recovery intent from the initial link or PASSWORD_RECOVERY event and verify the user before submission; auth consumes the URL hash during initialization.
