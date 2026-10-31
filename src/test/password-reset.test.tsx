@@ -42,9 +42,10 @@ describe("Password recovery", () => {
     await waitFor(() => expect(screen.getByRole("button", { name: "Update password" })).toBeEnabled());
   });
 
-  it("does not allow an ordinary signed-in session without a recovery link", () => {
+  it("does not allow an ordinary signed-in session without a recovery link", async () => {
     auth.getUser.mockResolvedValue({ data: { user: { id: "owner" } }, error: null });
     render(<ResetPassword />);
+    await waitFor(() => expect(screen.getByRole("alert")).toBeInTheDocument());
     expect(screen.getByRole("button", { name: "Update password" })).toBeDisabled();
     expect(auth.updateUser).not.toHaveBeenCalled();
   });
