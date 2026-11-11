@@ -7,6 +7,13 @@ export type Profile = {
   skills: string[];
   photo?: string;
   heroImage?: string;
+  phone?: string;
+  whatsapp?: string;
+  linkedin?: string;
+  github?: string;
+  twitter?: string;
+  instagram?: string;
+  facebook?: string;
 };
 
 export const profile: Profile = {
