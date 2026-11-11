@@ -230,6 +230,9 @@ function AdminPage() {
             <Field label="Title" value={draft.profile.title} onChange={(v) => setProfile({ title: v })} />
             <Field label="Location" value={draft.profile.location} onChange={(v) => setProfile({ location: v })} />
             <Field label="Email" value={draft.profile.email} onChange={(v) => setProfile({ email: v })} />
+            {CONTACT_FIELDS.map(([k, label]) => (
+              <Field key={k} label={label} value={draft.profile[k] ?? ""} onChange={(v) => setProfile({ [k]: v })} />
+            ))}
           </div>
           <AreaField
             label="Tagline (shown on the home page)"
@@ -523,3 +526,13 @@ function GalleryPicker({
     </div>
   );
 }
+
+const CONTACT_FIELDS = [
+  ["phone", "Phone number"],
+  ["whatsapp", "WhatsApp number"],
+  ["linkedin", "LinkedIn link"],
+  ["github", "GitHub link"],
+  ["twitter", "X / Twitter link"],
+  ["instagram", "Instagram link"],
+  ["facebook", "Facebook link"],
+] as const;
