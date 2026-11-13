@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
-import { Images } from "lucide-react";
+import { ExternalLink, Images } from "lucide-react";
 import type { Project, Research, Certification } from "@/lib/content";
-import { entryCode, mediaUrl, photosOf } from "@/lib/site-content";
+import { entryCode, externalUrl, mediaUrl, photosOf } from "@/lib/site-content";
 
 function PhotoCount({ count }: { count: number }) {
   if (count < 2) return null;
@@ -77,6 +77,11 @@ export function ResearchItem({ r, index }: { r: Research; index: number }) {
           <p className="mt-2 text-muted-foreground">{r.abstract}</p>
           <div className="mt-3 flex items-center gap-3 font-mono text-xs text-primary">
             <span>Read more →</span>
+            {externalUrl(r.link) && (
+              <span className="inline-flex items-center gap-1 text-muted-foreground">
+                <ExternalLink className="h-3 w-3" /> Published
+              </span>
+            )}
             <PhotoCount count={photos.length} />
           </div>
         </div>

@@ -46,7 +46,7 @@ export const certifications: Certification[] = [
   { title: "Python for Everybody Specialization", issuer: "University of Michigan · Coursera", year: "2023" },
 ];
 
-export type Research = { title: string; venue: string; year: string; abstract: string; image?: string; gallery?: string[] };
+export type Research = { title: string; venue: string; year: string; abstract: string; link?: string; image?: string; gallery?: string[] };
 
 export const research: Research[] = [
   { title: "Adaptive PID Tuning for Low-Cost Mobile Robots in Unstructured Terrain", venue: "Final Year Thesis", year: "2026", abstract: "A comparison of fuzzy and gain-scheduled PID approaches for affordable differential-drive robots." },
