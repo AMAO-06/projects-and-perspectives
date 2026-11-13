@@ -32,3 +32,16 @@ export function photosOf(entry: { image?: string | undefined; gallery?: string[]
 export function entryCode(prefix: string, index: number): string {
   return `${prefix}-${String(index + 1).padStart(2, "0")}`;
 }
+
+/**
+ * Turn a pasted link into a safe, clickable URL.
+ * Blank stays blank (null); "ieeexplore.ieee.org/123" becomes "https://…";
+ * anything that isn't http/https (javascript:, data:) is dropped.
+ */
+export function externalUrl(value?: string | null): string | null {
+  const v = value?.trim() ?? "";
+  if (!v) return null;
+  if (/^https?:\/\//i.test(v)) return v;
+  if (/^[a-z][a-z0-9+.-]*:/i.test(v)) return null;
+  return `https://${v}`;
+}

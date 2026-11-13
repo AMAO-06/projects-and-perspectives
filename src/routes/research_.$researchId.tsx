@@ -1,6 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { entryCode, photosOf, siteContentQueryOptions } from "@/lib/site-content";
+import { ExternalLink } from "lucide-react";
+import { entryCode, externalUrl, photosOf, siteContentQueryOptions } from "@/lib/site-content";
 import { profile as fallbackProfile } from "@/lib/content";
 import { PhotoGallery } from "@/components/PhotoGallery";
 
@@ -45,6 +46,17 @@ function ResearchDetailPage() {
       </div>
       <h1 className="mt-1 text-4xl font-bold md:text-5xl">{item.title}</h1>
       <p className="mt-6 max-w-2xl whitespace-pre-line text-lg text-muted-foreground">{item.abstract}</p>
+      {externalUrl(item.link) && (
+        <a
+          href={externalUrl(item.link) ?? "#"}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-8 inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-3 font-medium text-primary-foreground shadow-glow transition-transform hover:scale-105"
+        >
+          Read the published paper
+          <ExternalLink className="h-4 w-4" />
+        </a>
+      )}
       <PhotoGallery photos={photosOf(item)} title={item.title} />
     </section>
   );
