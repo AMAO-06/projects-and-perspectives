@@ -316,6 +316,12 @@ function AdminPage() {
               </div>
               <Field label="Year" value={r.year} onChange={(v) => updateList("research", i, { year: v })} />
               <AreaField label="Abstract" value={r.abstract} onChange={(v) => updateList("research", i, { abstract: v })} />
+              <Field
+                label="Publication link (where it's published)"
+                value={r.link ?? ""}
+                onChange={(v) => updateList("research", i, { link: v })}
+                placeholder="https://ieeexplore.ieee.org/document/1234567"
+              />
               <PhotoPicker
                 label="Cover photo (optional)"
                 path={r.image}
@@ -406,15 +412,17 @@ function Field({
   label,
   value,
   onChange,
+  placeholder,
 }: {
   label: string;
   value: string;
   onChange: (v: string) => void;
+  placeholder?: string | undefined;
 }) {
   return (
     <div className="space-y-1.5">
       <Label>{label}</Label>
-      <Input value={value} onChange={(e) => onChange(e.target.value)} />
+      <Input value={value} onChange={(e) => onChange(e.target.value)} {...(placeholder ? { placeholder } : {})} />
     </div>
   );
 }
